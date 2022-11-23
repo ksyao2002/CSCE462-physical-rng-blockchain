@@ -11,6 +11,8 @@ import math
 import numpy as np
 import board
 
+DIFFICULTY = 4
+
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
@@ -28,7 +30,7 @@ start_time = clock_gettime(0)
 ret = [[] for i in range(10)]
 counter = 0
 numZerosConsecutive = 0
-while numZerosConsecutive<10:
+while True:
     tmp = [digit for digit in '{0:10b}'.format(chan0.value >>6)]
     numZeros = 0
     for i in range(len(tmp)):
@@ -51,6 +53,9 @@ while numZerosConsecutive<10:
                 else:
                     numZerosConsecutive = 0
 
+    if numZerosConsecutive >= DIFFICULTY:
+        print("\n\n ************** BLOCK PRODUCED ************** \n\n")
+        numZerosConsecutive = 0
     if counter%2 ==1:
         ret = [[] for i in range(10)]
 
