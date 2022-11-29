@@ -10,31 +10,19 @@ import digitalio
 import math
 import numpy as np
 import board
+# import blockchain
+from ecdsa import SigningKey, VerifyingKey,NIST384p
+import pickle
 
-class Block:
-    def __init__(self, index, transactions, timestamp, previous_hash, nonce=0):
-        self.index = index
-        self.transactions = transactions
-        self.timestamp = timestamp
-        self.previous_hash = previous_hash
-        self.nonce = nonce
+f = open('pk','rb')
 
-class Blockchain: 
-    def __init__(self):
-        self.unconfirmed_transactions = []
-        self.chain = []
-        self.create_genesis_block()
- 
-    def create_genesis_block(self):
-        genesis_block = Block(0, [], time.time(), "0")
-        genesis_block.hash = genesis_block.compute_hash()
-        self.chain.append(genesis_block)
-    @property
-    def last_block(self):
-        return self.chain[-1]
+# sk = SigningKey.from_der(pickle.load(f))
+# f.close()
+
+# my_chain = blockchain.Blockchain()
 
 mining = False
-DIFFICULTY = 4
+DIFFICULTY = 10
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -79,6 +67,9 @@ while counter<256:
 
         if numZerosConsecutive >= DIFFICULTY:
             print("\n\n ************** BLOCK PRODUCED ************** \n\n")
+            # my_chain.mine(sk)
+            # print("New blockchain:")
+            # print(my_chain)
             numZerosConsecutive = 0
         if counter%2 ==1:
             ret = [[] for i in range(10)]
