@@ -1,9 +1,18 @@
 import ecdsa
+from ecdsa import SigningKey, VerifyingKey,NIST384p
+import codecs
 import pickle
 
-#NOTE: Don't change this, or else you will isolate yourself from the rest of the protocol boo hoo
-AUTH_PUBLIC_KEY = b'V@\x0bl\xba\x12\xab"\xcc\xbdb\xc1\xb2]O\x0c\xc7\xb8e\xf4\xd53\xe2\xfd\x82IP\xad\xcc\xaf\xe3\xbeY\x82\x9a(\x03\x91T\xf2\x9a;\xde\x8e\xd2\xc8\xeaD\xf2\xcf-\x11\xe7\xb1\xa2^\xec\xf3\xfd\xb4\xb6l\x06\xe6'
+#NOTE: Don't change publickey, or else you will isolate yourself from the rest of the protocol
 
-sk = 
+f = open('pk','rb')
+
+sk = SigningKey.from_der(pickle.load(f))
+f.close()
+
+f = open('publickey','rb')
+vk = VerifyingKey.from_der(pickle.load(f))
+f.close()
 sig = sk.sign(b"message")
-vk.verify(sig, b"message") # True
+res = vk.verify(sig, b"message") # True
+print(res)
