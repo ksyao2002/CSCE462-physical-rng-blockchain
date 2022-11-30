@@ -4,7 +4,7 @@ import codecs
 import pickle
 import json
 import time
-import sha256
+from hashlib import sha256
 
 #NOTE: Don't change publickey, or else you will isolate yourself from the rest of the protocol
 
@@ -41,6 +41,18 @@ class Blockchain:
         genesis_block = Block(0, [], time.time(), "0")
         genesis_block.hash = genesis_block.compute_hash()
         self.chain.append(genesis_block)
+    
+    def print_chain(self):
+        print('length: ',len(self.chain))
+        for block in self.chain:
+            print('index: ',block.index)
+            print('transactions: ',block.transactions)
+            print('timestamp: ',block.timestamp)
+            print('previous_hash: ',block.previous_hash)
+            print('hash: ',block.hash)
+            if block.index !=0:
+                print('signature: ',block.signature)
+            print()
 
     def validate_chain(self):
         prev = None
@@ -50,7 +62,7 @@ class Blockchain:
                 continue
             if prev.hash != block.previous_hash: #make sure the hashes have not been changed
                 return False
-            if self.vk.verify(block.signature, block.hash):
+            if self.vk.verify(block.signature, bytes(block.hash, 'utf-8')):
                 return False
         return True
 
@@ -58,8 +70,8 @@ class Blockchain:
                 self.unconfirmed_transactions.append(transaction)
     
     def mine(self, pk):
-            if not self.unconfirmed_transactions:
-                return False
+            #if not self.unconfirmed_transactions:
+            #    return False
             
             last_block = self.last_block
     
@@ -69,7 +81,7 @@ class Blockchain:
                             previous_hash=last_block.hash)
             
             new_block.hash = new_block.compute_hash()
-            new_block.signature = pk.sign(new_block.hash)
+            new_block.signature = pk.sign(bytes(new_block.hash,'utf-8'))
             self.chain.append(new_block)
             
             
